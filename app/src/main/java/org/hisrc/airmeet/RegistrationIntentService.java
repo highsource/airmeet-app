@@ -32,7 +32,7 @@ public class RegistrationIntentService extends IntentService {
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
             Log.i(TAG, "GCM Registration Token: " + token);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            subscribeTopics(token);
+//            subscribeTopics(token);
             editor.putString(AirmeetPreferences.TOKEN, token);
             editor.apply();
         } catch (Exception e) {
@@ -40,10 +40,10 @@ public class RegistrationIntentService extends IntentService {
         }
     }
 
-    private void subscribeTopics(String token) throws IOException {
-        GcmPubSub pubSub = GcmPubSub.getInstance(this);
-        for (String topic : TOPICS) {
-            pubSub.subscribe(token, "/topics/" + topic, null);
-        }
-    }
+//    private void subscribeTopics(String token) throws IOException {
+//        GcmPubSub pubSub = GcmPubSub.getInstance(this);
+//        for (String topic : TOPICS) {
+//            pubSub.subscribe(token, "/topics/" + topic, null);
+//        }
+//    }
 }

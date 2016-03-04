@@ -13,38 +13,53 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
-public class FlightSearch extends AppCompatActivity  {
+import org.hisrc.airmeet.gms.gcm.SubscribeToTopicTask;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+public class FlightSearchActivity extends AppCompatActivity  {
 
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private final static String TAG = FlightSearch.class.getName();
+    private final static String TAG = FlightSearchActivity.class.getName();
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private boolean isReceiverRegistered;
 
     // UI references.
-    private EditText mFlightNumberView;
-    private EditText mDepartureDateView;
+    private EditText mFlightNumber;
+    private DatePicker mDepartureDate;
     private Button mSubscribeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flight_search);
-        mFlightNumberView = (EditText) findViewById(R.id.flightNumber_editText);
-        mDepartureDateView = (EditText) findViewById(R.id.departureDate_editText);
+        mFlightNumber = (EditText) findViewById(R.id.edit_text_flight_number);
+        mDepartureDate = (DatePicker) findViewById(R.id.date_picker_departure_date);
 
-        Button mSubscribeButton = (Button) findViewById(R.id.subscribe_button);
+        Button mSubscribeButton = (Button) findViewById(R.id.button_subscribe);
         mSubscribeButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i(TAG, "Trying to subscribe.");
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.YEAR, mDepartureDate.getYear());
+                calendar.set(Calendar.MONTH, mDepartureDate.getMonth());
+                calendar.set(Calendar.DAY_OF_MONTH, mDepartureDate.getDayOfMonth());
+                String departureDate = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
+                String flightNumber = mFlightNumber.getText().toString();
+
+                String topic = "/topics/Flight-" + flightNumber.toUpperCase() + "-" + departureDate;
+                new SubscribeToTopicTask(FlightSearchActivity.this).execute(topic);
+
+                Log.i(TAG, "Trying to subscribe to [" + topic + "].");
             }
         });
 
@@ -113,4 +128,5 @@ public class FlightSearch extends AppCompatActivity  {
         }
         return true;
     }
+
 }
