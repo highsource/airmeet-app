@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_id": "airmeet-fra",
+    "project_number": "812429027866",
+    "name": "Airmeet"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:812429027866:android:f45c8a6e1738a31c",
+        "client_id": "android:org.hisrc.airmeet",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "org.hisrc.airmeet",
+          "certificate_hash": []
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "812429027866-mpd7sfihhqb5ffdgubd46meue1mt39ee.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.hisrc.airmeet",
+            "certificate_hash": "5F107116C7854C565704451ED8B21F7755EACAFB"
+          }
+        },
+        {
+          "client_id": "812429027866-hh1393ll3vgi5vk8qfmqsjqmpldo62jr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 2,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 2
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}

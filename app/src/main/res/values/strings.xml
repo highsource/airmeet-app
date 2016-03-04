@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Airmeet</string>
+    <!-- Strings related to login -->
+    <string name="flightNumber">Flight number</string>
+    <string name="departureDate">Departure date</string>
+    <string name="subscribe">Subscribe</string>
+</resources>
