@@ -4,9 +4,12 @@
     <string name="flightNumber">Flight number</string>
     <string name="departureDate">Departure date</string>
     <string name="subscribe">Subscribe</string>
+    <string name="depart">Depart</string>
     <string name="flightNotFound">Flight {0} with departure date {1} could not be found</string>
     <string name="flightinfoPattern" formatted="false">http://airmeet.eu-central-1.elasticbeanstalk.com/operations/flightinfo/%s/%s</string>
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="status">Status</string>
+    <string name="search">Search</string>
+    <string name="arrival">Arrival</string>
 </resources>

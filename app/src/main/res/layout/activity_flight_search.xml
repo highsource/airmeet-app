@@ -38,7 +38,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search"
+        android:text="@string/search"
         android:id="@+id/search_button"
         android:layout_below="@+id/departureDate_editText" android:layout_centerHorizontal="true"/>
     <TextView
@@ -72,19 +72,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Depart"
+        android:text="@string/depart"
         android:id="@+id/textView5"
 
         android:layout_above="@+id/editText6" android:layout_alignStart="@+id/from_editText"/>
     <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
               android:id="@+id/editText5"
-              android:hint="hh:mm dd.mm.yyyy"
-              android:layout_below="@+id/textView5" android:layout_alignStart="@+id/textView5"/>
+              android:hint="hh:mm dd.mm.yy"
+              android:layout_below="@+id/textView5" android:layout_alignStart="@+id/textView5"
+              android:layout_alignEnd="@+id/flightNumber_editText"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Arrival"
+        android:text="@string/arrival"
         android:id="@+id/textView6"
         android:layout_marginTop="69dp"
         android:layout_below="@+id/to_editText" android:layout_centerHorizontal="true"/>
@@ -92,8 +93,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/editText6"
-        android:hint="hh:mm"
-        android:layout_below="@+id/textView6" android:layout_alignStart="@+id/textView6"/>
+        android:hint="hh:mm dd.mm.yy"
+        android:layout_below="@+id/textView6" android:layout_alignStart="@+id/textView6"
+        android:layout_alignEnd="@+id/to_textView"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
