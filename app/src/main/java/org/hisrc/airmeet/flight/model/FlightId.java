@@ -3,7 +3,6 @@ package org.hisrc.airmeet.flight.model;
 import java.io.Serializable;
 
 import org.hisrc.airmeet.time.format.DateTimeFormatConstants;
-import org.hisrc.lhapi.client.model.Flight;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
@@ -15,14 +14,6 @@ public class FlightId implements Serializable {
 	private final String flightNumber;
 	private final LocalDate departureDate;
 	private final String departureDateAsString;
-
-	public FlightId(Flight flight) {
-		final LocalDateTime dateTime = flight.getDeparture().getScheduledTimeLocal().getDateTime();
-		this.departureDate = dateTime.toLocalDate();
-		this.departureDateAsString = DateTimeFormatConstants.DATE_FORMATTER.print(this.departureDate);
-		this.flightNumber = String.format("%s%d", flight.getMarketingCarrier().getAirlineID(),
-				flight.getMarketingCarrier().getFlightNumber());
-	}
 
 	public FlightId(String flightNumber, LocalDate departureDate) {
 		this.flightNumber = flightNumber;

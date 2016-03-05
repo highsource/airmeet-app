@@ -26,6 +26,8 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.hisrc.airmeet.flight.model.FlightId;
 import org.hisrc.airmeet.flight.task.SearchFlightInfoTask;
+import org.hisrc.airmeet.gms.gcm.SubscribeToTopicTask;
+import org.hisrc.airmeet.time.format.DateTimeFormatConstants;
 import org.joda.time.LocalDate;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,6 +65,11 @@ public class FlightSearchActivity extends AppCompatActivity{
     TextView mArrival_editText = (TextView)findViewById(R.id.arrival_editText);
     TextView mStatus_editText = (TextView)findViewById(R.id.status_editText);*/
 
+
+
+
+    private View mFlightInfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +79,10 @@ public class FlightSearchActivity extends AppCompatActivity{
 
         mFrom_editText = (TextView)findViewById(R.id.from_editText);
         mTo_editText = (EditText)findViewById(R.id.to_editText);
+
+        mFlightInfo = findViewById(R.id.flight_info_linearLayout);
+        mFlightInfo.setVisibility(View.INVISIBLE);
+
 
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
 
@@ -127,7 +138,6 @@ public class FlightSearchActivity extends AppCompatActivity{
 
             @Override
             public void onClick(View view) {
-                // // TODO: 05.03.2016
                 fromDatePickerDialog.show();
             }
         } );
@@ -172,26 +182,36 @@ public class FlightSearchActivity extends AppCompatActivity{
         }.execute(flightId);
     }
 
-    private void onFlightFound(FlightId flightId, JSONObject flightJSON) {
 
+    private FlightId currentFlightId;
 
+    private void onFlightFound(final FlightId flightId, JSONObject flightJSON) {
+        this.currentFlightId = flightId;
+
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(AirmeetPreferences.FLIGHT_NUMBER, flightId.getFlightNumber());
+        editor.putString(AirmeetPreferences.DEPARTURE_DATE, DateTimeFormatConstants.DATE_FORMATTER.print(flightId.getDepartureDate()));
+        editor.apply();
 
         try {
-            String departureAirportCode = flightJSON.getJSONObject("departureAirport").getString("AirportCode");
+            String departureAirportCode = flightJSON.getString("departureAirportCode");
+            String departureCity = flightJSON.getString("departureCity");
+            String arrivalAirportCode = flightJSON.getString("arrivalAirportCode");
+            String arrivalCity = flightJSON.getString("arrivalCity");
 
-            String departureAirportName = flightJSON.getJSONObject("departureAirport").getJSONObject("Names").getJSONObject("Name").getString("$");
-            mFrom_editText.setText(departureAirportName);
+            mFrom_editText.setText(departureAirportCode);
+            mTo_editText.setText(arrivalAirportCode);
+            mFlightInfo.setVisibility(View.VISIBLE);
 
-            String arrivalAirportCode = flightJSON.getJSONObject("arrivalAirport").getString("AirportCode");
-
-            String arrivalAirportName = flightJSON.getJSONObject("arrivalAirport").getJSONObject("Names").getJSONObject("Name").getString("$");
-            mTo_editText.setText(arrivalAirportName,TextView.BufferType.EDITABLE);
-
-            Toast toast = Toast.makeText(FlightSearchActivity.this,
-                    MessageFormat.format("From {0} ({1}) to {2} ({3})", departureAirportCode, departureAirportName, arrivalAirportCode, arrivalAirportName)
-                    , Toast.LENGTH_LONG);
-            toast.show();
-
+            Button mSubscribeButton = (Button) findViewById(R.id.subscribe_button);
+            mSubscribeButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    subscribeToFlight(flightId);
+                }
+            });
         }
         catch(JSONException jsonex)
         {
@@ -205,6 +225,23 @@ public class FlightSearchActivity extends AppCompatActivity{
                         getString(R.string.flightNotFound), flightId.getFlightNumber(), flightId.getDepartureDate())
                 , Toast.LENGTH_LONG);
         toast.show();
+    }
+
+    private void subscribeToFlight(final FlightId flightId)
+    {
+        final String topic =
+                MessageFormat.format(getString(R.string.flightTopicPattern), flightId.getFlightNumber(), flightId.getDepartureDateAsString());
+        new SubscribeToTopicTask(this){
+            @Override
+            protected void onPostExecute(String[] strings) {
+                super.onPostExecute(strings);
+                Toast toast = Toast.makeText(FlightSearchActivity.this,
+                        MessageFormat.format(
+                                getString(R.string.subscribedToFlight), flightId.getFlightNumber(), flightId.getDepartureDate())
+                        , Toast.LENGTH_LONG);
+                toast.show();
+            }
+        }.execute(topic);
     }
 
     @Override

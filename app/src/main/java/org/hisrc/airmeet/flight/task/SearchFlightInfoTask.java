@@ -28,7 +28,7 @@ import okhttp3.ResponseBody;
 /**
  * Created by Alexey Valikov on 3/4/2016.
  */
-public class SearchFlightInfoTask extends AsyncTask<FlightId, Void, JSONObject>{
+public class SearchFlightInfoTask extends AsyncTask<FlightId, Void, JSONObject> {
 
     private final String TAG = "SearchFlightInfo";
     private final Context context;
@@ -44,17 +44,19 @@ public class SearchFlightInfoTask extends AsyncTask<FlightId, Void, JSONObject>{
         final String flightinfoPattern = context.getString(R.string.flightinfoPattern);
         final String url =
                 String.format(flightinfoPattern, flightId.getFlightNumber(), DateTimeFormatConstants.DATE_FORMATTER.print(flightId.getDepartureDate()));
-                Request request = new Request.Builder()
+        Request request = new Request.Builder()
                 .url(url).get().build();
 
         try {
             final Response response = client.newCall(request).execute();
-            final ResponseBody body = response.body();
-            final String result = body.string();
-            return new JSONObject(result);
-        }
-        catch (Exception ioex)
-        {
+            if (response.isSuccessful()) {
+                final ResponseBody body = response.body();
+                final String result = body.string();
+                return new JSONObject(result);
+            } else {
+                return null;
+            }
+        } catch (Exception ioex) {
             Log.i(TAG, "Could not load", ioex);
             return null;
         }
