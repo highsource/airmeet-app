@@ -1,4 +1,4 @@
-   <?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
        package="org.hisrc.airmeet">
    
@@ -16,7 +16,7 @@
            android:supportsRtl="true"
            android:theme="@style/AppTheme">
            <activity
-               android:name=".FlightSearchActivity"
+               android:name="org.hisrc.airmeet.FlightSearchActivity"
                android:label="@string/app_name">
                <intent-filter>
                    <action android:name="android.intent.action.MAIN" />
@@ -40,7 +40,7 @@
    
            <!-- [START gcm_listener] -->
            <service
-               android:name=".MyGcmListenerService"
+               android:name="org.hisrc.airmeet.MyGcmListenerService"
                android:exported="false">
                <intent-filter>
                    <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -49,7 +49,7 @@
            <!-- [END gcm_listener] -->
            <!-- [START instanceId_listener] -->
            <service
-               android:name=".MyInstanceIDListenerService"
+               android:name="org.hisrc.airmeet.MyInstanceIDListenerService"
                android:exported="false">
                <intent-filter>
                    <action android:name="com.google.android.gms.iid.InstanceID" />
@@ -57,13 +57,13 @@
            </service>
            <!-- [END instanceId_listener] -->
            <service
-               android:name=".RegistrationIntentService"
+               android:name="org.hisrc.airmeet.RegistrationIntentService"
                android:exported="false"></service>
    
            <activity
-               android:name=".GoogleSignInActivity"
+               android:name="org.hisrc.airmeet.GoogleSignInActivity"
                android:label="@string/title_activity_google_sign_in"
-               android:theme="@style/AppTheme.NoActionBar"></activity>
+              ></activity>
        </application>
    
    </manifest>
