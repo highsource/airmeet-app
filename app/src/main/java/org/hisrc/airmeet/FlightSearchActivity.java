@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.DatePicker;;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -34,7 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class FlightSearchActivity extends AppCompatActivity implements OnClickListener {
+public class FlightSearchActivity extends AppCompatActivity{
 
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -55,12 +56,22 @@ public class FlightSearchActivity extends AppCompatActivity implements OnClickLi
     private DatePickerDialog fromDatePickerDialog;
     private DatePickerDialog toDatePickerDialog;
 
+    //TextView
+    private TextView mFrom_editText;
+    private EditText mTo_editText;
+    /*TextView mDepart_editText = (TextView)findViewById(R.id.depart_editText);
+    TextView mArrival_editText = (TextView)findViewById(R.id.arrival_editText);
+    TextView mStatus_editText = (TextView)findViewById(R.id.status_editText);*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flight_search);
         mFlightNumberView = (EditText) findViewById(R.id.flightNumber_editText);
         mDepartureDateView = (EditText) findViewById(R.id.departureDate_editText);
+
+        mFrom_editText = (TextView)findViewById(R.id.from_editText);
+        mTo_editText = (EditText)findViewById(R.id.to_editText);
 
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
 
@@ -109,14 +120,17 @@ public class FlightSearchActivity extends AppCompatActivity implements OnClickLi
         fromDateEtxt.setInputType(InputType.TYPE_NULL);
         fromDateEtxt.requestFocus();
 
-        toDateEtxt = (EditText) findViewById(R.id.editText5);
-        toDateEtxt.setInputType(InputType.TYPE_NULL);
     }
 
     private void setDateTimeField() {
-        fromDateEtxt.setOnClickListener(this);
-        toDateEtxt.setOnClickListener(this);
+        fromDateEtxt.setOnClickListener(new OnClickListener(){
 
+            @Override
+            public void onClick(View view) {
+                // // TODO: 05.03.2016
+                fromDatePickerDialog.show();
+            }
+        } );
         Calendar newCalendar = Calendar.getInstance();
         fromDatePickerDialog = new DatePickerDialog(this, new OnDateSetListener() {
 
@@ -141,15 +155,6 @@ public class FlightSearchActivity extends AppCompatActivity implements OnClickLi
 
 
 
-    public void onClick(View view) {
-        if(view == fromDateEtxt) {
-            fromDatePickerDialog.show();
-        } else if(view == toDateEtxt) {
-            toDatePickerDialog.show();
-        }
-    }
-
-
     private void searchFlight(final String flightNumber, final LocalDate departureDate) {
         final FlightId flightId = new FlightId(flightNumber, departureDate);
         new SearchFlightInfoTask(FlightSearchActivity.this){
@@ -157,22 +162,31 @@ public class FlightSearchActivity extends AppCompatActivity implements OnClickLi
             protected void onPostExecute(JSONObject flightJSON) {
                 if (flightJSON ==null)
                 {
-                    onFlightNotFound(flightNumber, departureDate);
+                    onFlightNotFound(flightId);
                 }
                 else
                 {
-                    onFlightFound(flightJSON);
+                    onFlightFound(flightId, flightJSON);
                 }
             }
         }.execute(flightId);
     }
 
-    private void onFlightFound(JSONObject flightJSON) {
+    private void onFlightFound(FlightId flightId, JSONObject flightJSON) {
+
+
+
         try {
             String departureAirportCode = flightJSON.getJSONObject("departureAirport").getString("AirportCode");
+
             String departureAirportName = flightJSON.getJSONObject("departureAirport").getJSONObject("Names").getJSONObject("Name").getString("$");
+            mFrom_editText.setText(departureAirportName);
+
             String arrivalAirportCode = flightJSON.getJSONObject("arrivalAirport").getString("AirportCode");
+
             String arrivalAirportName = flightJSON.getJSONObject("arrivalAirport").getJSONObject("Names").getJSONObject("Name").getString("$");
+            mTo_editText.setText(arrivalAirportName,TextView.BufferType.EDITABLE);
+
             Toast toast = Toast.makeText(FlightSearchActivity.this,
                     MessageFormat.format("From {0} ({1}) to {2} ({3})", departureAirportCode, departureAirportName, arrivalAirportCode, arrivalAirportName)
                     , Toast.LENGTH_LONG);
@@ -185,10 +199,10 @@ public class FlightSearchActivity extends AppCompatActivity implements OnClickLi
         }
     }
 
-    private void onFlightNotFound(String flightNumber, LocalDate departureDate) {
+    private void onFlightNotFound(FlightId flightId) {
         Toast toast = Toast.makeText(FlightSearchActivity.this,
                 MessageFormat.format(
-                        getString(R.string.flightNotFound), flightNumber, departureDate)
+                        getString(R.string.flightNotFound), flightId.getFlightNumber(), flightId.getDepartureDate())
                 , Toast.LENGTH_LONG);
         toast.show();
     }

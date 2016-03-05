@@ -55,7 +55,7 @@ public abstract class AbstractToggleTopicSubscribtionTask extends AsyncTask<Stri
 
     protected abstract void toggleSubscription(GcmPubSub pubSub, String topic, String token) throws IOException;
 
-    @Override
+    /*@Override
     protected void onPostExecute(String[] topics) {
         super.onPostExecute(topics);
         if (topics != null) {
@@ -69,7 +69,7 @@ public abstract class AbstractToggleTopicSubscribtionTask extends AsyncTask<Stri
             preferences.edit().putStringSet(AirmeetPreferences.SUBSCRIBED_TOPICS, subscribedTopics).apply();
         }
 
-    }
+    }*/
 
     protected abstract void toggleTopic(String topic, Set<String> topics);
 }
