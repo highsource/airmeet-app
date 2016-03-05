@@ -1,5 +1,6 @@
 package org.hisrc.airmeet;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -8,9 +9,14 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
+
+import org.hisrc.airmeet.flight.model.FlightId;
+import org.hisrc.airmeet.time.format.DateTimeFormatConstants;
+import org.joda.time.LocalDate;
+
+import java.text.MessageFormat;
 
 public class MyGcmListenerService extends GcmListenerService {
 
@@ -26,56 +32,40 @@ public class MyGcmListenerService extends GcmListenerService {
     // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
+        String flightNumber = data.getString("flightNumber");
+        String departureDateString = data.getString("flightDepartureDate");
+        LocalDate departureDate = DateTimeFormatConstants.parseDate(departureDateString);
+        final FlightId flightId = new FlightId(flightNumber, departureDate);
         String message = data.getString("message");
-        Log.d(TAG, "From: " + from);
-        Log.d(TAG, "Message: " + message);
-
         if (from.startsWith("/topics/")) {
-            // message received from some topic.
-        } else {
-            // normal downstream message.
+            sendNotification(flightId, message);
         }
-
-        // [START_EXCLUDE]
-        /**
-         * Production applications would usually process the message here.
-         * Eg: - Syncing with server.
-         *     - Store message in local database.
-         *     - Update UI.
-         */
-
-        /**
-         * In some cases it may be useful to show a notification indicating to the user
-         * that a message was received.
-         */
-        sendNotification(message);
-        // [END_EXCLUDE]
     }
-    // [END receive_message]
-
-    /**
-     * Create and show a simple notification containing the received GCM message.
-     *
-     * @param message GCM message received.
-     */
-    private void sendNotification(String message) {
+    private void sendNotification(FlightId flightId, String message){
         Intent intent = new Intent(this, FlightSearchActivity.class);
+        intent.putExtra(AirmeetExtras.FLIGHT_ID, flightId);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, message.hashCode(), intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        final String title = MessageFormat.format(getString(R.string.notificationTitleFormat), flightId.getFlightNumber(), flightId.getDepartureDateAsString());
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_stat_ic_notification)
-                .setContentTitle("GCM Message")
+                .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+                .setContentIntent(pendingIntent).setPriority(Notification.PRIORITY_HIGH)
+                .setDefaults(Notification.DEFAULT_VIBRATE);
+//        if (Build.VERSION.SDK_INT >= 21) notificationBuilder.setVibrate(new long[0]);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(message.hashCode(), notificationBuilder.build());
+
     }
 }

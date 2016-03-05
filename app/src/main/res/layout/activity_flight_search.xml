@@ -36,7 +36,7 @@
                     android:id="@+id/flightNumber_editText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="LH1182"
+                    android:hint="LH173"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
             </LinearLayout>
 
@@ -50,7 +50,6 @@
                     android:id="@+id/departureDate_textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="2016-03-05"
                     android:text="@string/departureDate"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -58,7 +57,7 @@
                     android:id="@+id/departureDate_editText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="yyyy-mm-dd"
+                    android:hint="2016-03-05"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
             </LinearLayout>
         </LinearLayout>
@@ -149,7 +148,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <EditText
-                    android:id="@+id/depart_editText"
+                    android:id="@+id/departureTime_editText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="hh:mm +xx" />
@@ -169,7 +168,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
                 <EditText
-                    android:id="@+id/arrival_editText"
+                    android:id="@+id/arrivalTime_editText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="hh:mm +xx" />
