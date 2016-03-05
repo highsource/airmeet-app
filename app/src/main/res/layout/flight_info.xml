@@ -54,15 +54,14 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
-                android:id="@+id/subscribe_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/subscribe"
-                android:textStyle="bold" />
-
         </LinearLayout>
     </ScrollView>
+    <Button
+        android:id="@+id/subscribe_button"
+        style="?android:textAppearanceSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/subscribe"
+        android:textStyle="bold" />
 </LinearLayout>
